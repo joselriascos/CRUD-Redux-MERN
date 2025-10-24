@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { type AppThunk } from '../index'
+import { API_URL } from '../../utils/consts'
 
 export type UserId = string
 
@@ -45,12 +47,7 @@ export interface UserWithId extends User {
 //   },
 // ]
 
-const DEFAULT_STATE: UserWithId[] = []
-
-const initialState: UserWithId[] = (() => {
-  const persistedState = localStorage.getItem('__redux_state__')
-  return persistedState ? JSON.parse(persistedState).users : DEFAULT_STATE
-})()
+const initialState: UserWithId[] = []
 
 export const usersSlice = createSlice({
   name: 'users',
@@ -59,6 +56,7 @@ export const usersSlice = createSlice({
     addNewUser: (state, action: PayloadAction<UserWithId>) => {
       const newUser = action.payload
       state.push(newUser)
+      return state
     },
 
     deleteUserById: (state, action: PayloadAction<UserId>) => {
@@ -76,6 +74,7 @@ export const usersSlice = createSlice({
       const { id } = updatedUser
       const userIndex = state.findIndex((user) => user.id === id)
       if (state[userIndex] !== updatedUser) state[userIndex] = updatedUser
+      return state
     },
 
     rollbackUser: (state, action: PayloadAction<UserWithId>) => {
@@ -89,6 +88,12 @@ export const usersSlice = createSlice({
       }
       const userIndex = state.findIndex((user) => user.id === userToRollback.id)
       state[userIndex] = userToRollback
+      return state
+    },
+
+    setUsers: (state, action: PayloadAction<UserWithId[]>) => {
+      state = action.payload
+      return state
     },
   },
 })
@@ -101,4 +106,16 @@ export const {
   deleteUserByIdOnError,
   deleteUserById,
   rollbackUser,
+  setUsers,
 } = usersSlice.actions
+
+export const fetchUsers = (): AppThunk => async (dispatch) => {
+  try {
+    const response = await fetch(API_URL)
+    const data: UserWithId[] = await response.json()
+    dispatch(setUsers(data))
+    console.log('Users fetched successfully')
+  } catch (error) {
+    console.error('Failed to fetch users')
+  }
+}

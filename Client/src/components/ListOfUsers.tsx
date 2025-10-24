@@ -1,8 +1,8 @@
 import { DeleteIcon, EditIcon } from './Icons'
-import { useAppSelector } from '../hooks/store'
+import { useAppDispatch, useAppSelector } from '../hooks/store'
 import { CreateNewUser } from './CreateNewUser'
-import { useState } from 'react'
-import { UserWithId } from '../store/users/slice'
+import { useEffect, useState } from 'react'
+import { fetchUsers, UserWithId } from '../store/users/slice'
 import {
   Badge,
   Card,
@@ -47,14 +47,21 @@ export function ListOfUsers() {
     setDialogOpen({ isOpen: true, user: user })
   const closeDialog = () => setDialogOpen({ isOpen: false, user: null })
 
+  const dispatch = useAppDispatch()
   const users = useAppSelector((state) => state.users)
+
+  useEffect(() => {
+    dispatch(fetchUsers())
+  }, [dispatch])
 
   return (
     <>
       <Card className="outline-none ring-gray-400 rounded-sm h-full overflow-y-auto min-w-[250px]">
         <div className="flex justify-between items-center mb-4 gap-4">
           <Title className="flex items-center">
-            <span className='text-tremor-content-default dark:text-slate-600'>Users</span>
+            <span className="text-tremor-content-default dark:text-slate-600">
+              Users
+            </span>
             <Badge className="ml-2 rounded-xl text-blue-600 bg-blue-100 ring-0">
               {users.length}
             </Badge>

@@ -2,6 +2,7 @@ import { Middleware } from '@reduxjs/toolkit'
 import { showMessage, MessageType } from '../services/functions'
 import { deleteUserByIdOnError, rollbackUser } from './users/slice'
 import { UserWithId } from './users/slice'
+import { API_URL } from '../utils/consts'
 
 export const persistanceLocalStorageMiddleware: Middleware =
   (store) => (next) => (action) => {
@@ -22,8 +23,7 @@ export const syncWithDatabase: Middleware =
       const userToAdd = payload
       const userIdToAdd = payload.id
 
-      // Simulamos una llamada a la base de datos
-      fetch('https://jsonplaceholder.typicode.com/users/', {
+      fetch(API_URL, {
         method: 'POST',
         body: JSON.stringify(userToAdd),
         headers: {
@@ -33,51 +33,49 @@ export const syncWithDatabase: Middleware =
         .then((res) => {
           if (res.ok) {
             showMessage({
-              message: `Usuario ${userIdToAdd} agregado correctamente`,
+              message: `User ${userIdToAdd} created successfully`,
               type: MessageType.SUCCESS,
             })
             return
           }
-          throw new Error('Error al agregar usuario')
+          throw new Error('Error creating user')
         })
         .catch((err) => {
           showMessage({
-            message: `Error al agregar usuario`,
+            message: err.message,
             type: MessageType.ERROR,
           })
           store.dispatch(deleteUserByIdOnError(userIdToAdd))
-          console.log(err)
+          console.error(err)
         })
     }
 
-    //TODO: dialog para preguntar confirmar
     if (type === 'users/deleteUserById') {
       const userIdToRemove = payload
       const userToDelete = previusState.users.find(
         (user: UserWithId) => user.id === userIdToRemove
       )
 
-      // Simulamos una llamada a la base de datos
-      fetch(`https://jsonplaceholder.typicode.com/users/${userIdToRemove}`, {
+      fetch(`${API_URL}/${userIdToRemove}`, {
         method: 'DELETE',
       })
         .then((res) => {
           if (res.ok) {
             showMessage({
-              message: `Usuario ${userIdToRemove} eliminado correctamente`,
+              message: `User ${userIdToRemove} deleted successfully`,
               type: MessageType.SUCCESS,
             })
             return
           }
-          throw new Error('Error al eliminar el usuario')
+          throw new Error('Error deleting user')
         })
         .catch((err) => {
           showMessage({
-            message: `Error al eliminar el usuario ${userIdToRemove}`,
+            message: `Error deleting user ${userIdToRemove}`,
             type: MessageType.ERROR,
           })
           if (userToDelete) store.dispatch(rollbackUser(userToDelete))
-          console.log(err)
+          console.error(err)
         })
     }
 
@@ -87,8 +85,7 @@ export const syncWithDatabase: Middleware =
         (user: UserWithId) => user.id === userToEdit.id
       )
 
-      // Simulamos una llamada a la base de datos
-      fetch(`https://jsonplaceholder.typicode.com/users/${userToEdit.id}`, {
+      fetch(API_URL, {
         method: 'PUT',
         body: JSON.stringify(userToEdit),
         headers: {
@@ -98,23 +95,20 @@ export const syncWithDatabase: Middleware =
         .then((res) => {
           if (res.ok) {
             showMessage({
-              message: `Usuario ${userToEdit.id} actualizado correctamente`,
+              message: `User ${userToEdit.id} updated successfully`,
               type: MessageType.SUCCESS,
             })
             return
           }
-          throw new Error('Error al actualizar el usuario')
+          throw new Error('Error updating user')
         })
         .catch((err) => {
           showMessage({
-            message: `Error al actualizar el usuario ${userToEdit.id}`,
+            message: `Error updating user ${userToEdit.id}`,
             type: MessageType.ERROR,
           })
           if (previusUser) store.dispatch(rollbackUser(previusUser))
-          console.log(err)
-          console.log(
-            'si devuelve error 500 probablemente es porque la API de prueba no admite PUTs entonces se hace rollback'
-          )
+          console.error(err)
         })
     }
   }

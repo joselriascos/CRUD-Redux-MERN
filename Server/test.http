@@ -1,0 +1,2 @@
+### Delete user
+DELETE http://localhost:3000/api/users/d4eb444f-00fe-4ac6-a329-7a05dd186f9d
