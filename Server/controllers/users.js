@@ -4,7 +4,7 @@ const {
   validateParcialUser,
 } = require('../validations/zodSchemas.js')
 
-export class usersController {
+class usersController {
   static async getAll(req, res) {
     return res.json(users)
   }
@@ -54,3 +54,5 @@ export class usersController {
     return res.json('User deleted successfully')
   }
 }
+
+module.exports = usersController
