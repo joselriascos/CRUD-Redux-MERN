@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
+const serverless = require('serverless-http')
 
 const userRouter = require('../routes/userRouter.js')
 
@@ -15,7 +16,10 @@ app.use(cors())
 // Routes
 app.use('/api/users', userRouter)
 
+// Run serverless
+module.exports.handler = serverless(app)
+
 // Run server
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 })
