@@ -1,2 +1,27 @@
-### Delete user
-DELETE http://localhost:3000/api/users/d4eb444f-00fe-4ac6-a329-7a05dd186f9d
+### get users
+GET http://localhost:3000/api/users
+
+### add user
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "id": "4db327d8-737e-40e0-922c-133dce5ea10f",
+    "name": "Camilo",
+    "email": "camilo@gail.com",
+    "github": "laskjd"
+}
+
+### update user
+PUT http://localhost:3000/api/users/
+Content-Type: application/json
+
+{
+    "id": "4db327d8-737e-40e0-922c-133dce5ea10f",
+    "name": "Diego",
+    "email": "camilo@gail.com",
+    "github": "laskjd"
+}
+
+### delete user
+DELETE http://localhost:3000/api/users/4db327d8-737e-40e0-922c-133dce5ea10f
