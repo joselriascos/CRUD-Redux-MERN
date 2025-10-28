@@ -25,7 +25,11 @@ userSchema.statics.getAll = async function () {
 }
 
 userSchema.statics.addUser = async function (userData) {
-  const existingUser = await this.findOne({ id: userData.id })
+  const existingUser = await this.findOne({
+    name: userData.name,
+    email: userData.email,
+    github: userData.github,
+  })
   if (existingUser) return null
 
   try {
