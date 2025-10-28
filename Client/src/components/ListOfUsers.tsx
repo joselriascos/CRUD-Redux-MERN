@@ -74,16 +74,16 @@ export function ListOfUsers() {
             Add User
           </button>
         </div>
-        <Table className="text-gray-600">
+        <Table className="text-gray-600 table-fixed w-full">
           <TableHead>
             <TableRow className="border-b border-tremor-border dark:border-dark-tremor-border">
-              <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong truncate overflow-hidden">
                 Id
               </TableHeaderCell>
-              <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong w-1/3 whitespace-nowrap">
                 Name
               </TableHeaderCell>
-              <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong w-1/3 whitespace-nowrap">
                 Email
               </TableHeaderCell>
               <TableHeaderCell className="text-tremor-content-strong dark:text-dark-tremor-content-strong">
@@ -91,39 +91,48 @@ export function ListOfUsers() {
               </TableHeaderCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.id}>
-                <TableCell className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                  {user.id}
+                <TableCell className="flex items-center">
+                  <div className="w-[80px] sm:w-[120px] lg:w-full truncate">
+                    {user.id}
+                  </div>
                 </TableCell>
-                <TableCell className="flex items-center gap-4 max-w-80">
-                  <img
-                    className="w-8 h-8 rounded-full object-cover"
-                    src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
-                    alt={user.name}
-                  />
-                  <span className="truncate">{user.name}</span>
+
+                <TableCell className="w-1/3 truncate">
+                  <div className="flex items-center gap-4 overflow-hidden">
+                    <img
+                      className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                      src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
+                      alt={user.name}
+                    />
+                    <span className="truncate">{user.name}</span>
+                  </div>
                 </TableCell>
-                <TableCell className="max-w-80">
-                  <span className="truncate">{user.email}</span>
+
+                <TableCell className="w-1/3 truncate">
+                  <span className="truncate block">{user.email}</span>
                 </TableCell>
-                <TableCell className="flex items-center gap-4 justify-left">
-                  <button
-                    type="button"
-                    className="hover:text-black transition"
-                    // onClick={() => removeUser(user.id)}
-                    onClick={() => openDialog(user)}
-                  >
-                    <DeleteIcon />
-                  </button>
-                  <button
-                    type="button"
-                    className="hover:text-black transition"
-                    onClick={() => openEditModal(user)}
-                  >
-                    <EditIcon />
-                  </button>
+
+                <TableCell className="">
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      className="hover:text-black transition"
+                      onClick={() => openDialog(user)}
+                    >
+                      <DeleteIcon />
+                    </button>
+                    <button
+                      type="button"
+                      className="hover:text-black transition"
+                      onClick={() => openEditModal(user)}
+                    >
+                      <EditIcon />
+                    </button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
